@@ -51,7 +51,8 @@ for d, f in remotebackups:
         backup_path = basepath / "backup"
         for obj in Path(backup_path).glob("*"):
             if obj.is_dir():
-                shutil.copytree(obj, homedir / obj.relative_to(backup_path))
+                dst = homedir / obj.relative_to(backup_path)
+                shutil.copytree(obj, dst, dirs_exist_ok=True)
             elif obj.is_file():
                 shutil.copyfile(obj, homedir / obj.relative_to(backup_path))
             else:
