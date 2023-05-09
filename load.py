@@ -50,11 +50,12 @@ for d, f in remotebackups:
             tar.extractall(basepath)
         backup_path = basepath / "backup"
         for obj in Path(backup_path).glob("*"):
+            dst = homedir / obj.relative_to(backup_path)
+            print(dst)
             if obj.is_dir():
-                dst = homedir / obj.relative_to(backup_path)
                 shutil.copytree(obj, dst, dirs_exist_ok=True)
             elif obj.is_file():
-                shutil.copyfile(obj, homedir / obj.relative_to(backup_path))
+                shutil.copyfile(obj, dst) 
             else:
                 raise Exception(obj)
         shutil.rmtree(backup_path)
