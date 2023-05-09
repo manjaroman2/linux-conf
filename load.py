@@ -47,7 +47,7 @@ for d, f in remotebackups:
             print(info)
             return info 
         with tarfile.open(backuptar) as tar: 
-            tar.extractall()
+            tar.extractall(basepath)
         backup_path = basepath / "backup"
         for obj in Path(backup_path).glob("*"):
             if obj.is_dir():
