@@ -42,11 +42,11 @@ for d, f in remotebackups:
     if (d - state).total_seconds() > 0: 
         print(f"-> fetching {f}!")
         subprocess.run(["rclone", "copy", f"{rclonedir}/{f}", basepath])
-        
+        backuptar = basepath / f 
         def filter_func(info):
             print(info)
             return info 
-        with tarfile.open(f) as tar: 
+        with tarfile.open(backuptar) as tar: 
             tar.extractall()
         backup_path = basepath / "backup"
         for obj in Path(backup_path).glob("*"):
@@ -58,7 +58,7 @@ for d, f in remotebackups:
             else:
                 raise Exception(obj)
         shutil.rmtree(backup_path)
-        Path(f).unlink()
+        Path(backuptar).unlink()
         print("config has been updated")
         
         statefile.write_text(d.isoformat(timespec='seconds'))
