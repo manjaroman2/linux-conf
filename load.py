@@ -9,8 +9,8 @@ from common import rclonedir
 
 basepath = Path(__file__).resolve().parent
 
-homedir = basepath / "testdir"
-# homedir = Path().home().resolve()
+# homedir = basepath / "testdir"
+homedir = Path().home().resolve()
 
 
 print("HOME:", homedir)
