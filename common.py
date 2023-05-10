@@ -9,6 +9,7 @@ files = [
     # home / ".config/alacritty/alacritty.yml",
     # home / ".config/awesome/rc.lua",
     # home / ".config/awesome/themes/",
+    home / "bin/sampdl", 
     home / "bin/imgur", 
     home / "docs/bitwardenpw",
     home / "todo", 
