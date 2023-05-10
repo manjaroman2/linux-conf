@@ -4,17 +4,15 @@ from pathlib import Path
 import datetime
 import tarfile
 import shutil
-from common import rclonedir
+from common import rclonedir, statefile, basepath
 
 
-basepath = Path(__file__).resolve().parent
 
 # homedir = basepath / "testdir"
 homedir = Path().home().resolve()
 
 
 print("HOME:", homedir)
-statefile = basepath / ".state"
 if not statefile.is_file() or statefile.read_text() == "": 
     print("new machine!")
     # statefile.write_text(datetime.datetime.now().isoformat(timespec='seconds'))
@@ -66,3 +64,5 @@ for d, f in remotebackups:
         break
 else:
     print("No updates!")
+
+exit(0)

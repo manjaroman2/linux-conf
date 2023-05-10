@@ -4,9 +4,10 @@ import shutil
 import tarfile
 import datetime
 import subprocess
-from common import rclonedir, compression, files, home
+from common import rclonedir, compression, files, home, statefile, basepath
 
-backup = Path.cwd() / "backup"
+backup = basepath / "backup"
+state = datetime.datetime.fromisoformat(statefile.read_text())
 
 if not backup.is_dir():
     if backup.exists():
@@ -64,7 +65,8 @@ def dirsize(path):
 
 
 c = f".{compression}" if compression else ""
-backup_compressed = backup.parent / f"backup-{datetime.datetime.now().isoformat(timespec='seconds')}.tar{c}"
+d = datetime.datetime.now()
+backup_compressed = backup.parent / f"backup-{d.isoformat(timespec='seconds')}.tar{c}"
 print(f"Compressing {compression} file: {backup_compressed.name}")
 make_tarfile(backup_compressed, backup, compression)
 
@@ -75,4 +77,8 @@ print(
 shutil.rmtree(backup) 
 subprocess.run(["rclone", "copy", "-L", backup_compressed, rclonedir])
 backup_compressed.unlink()
+if (d - state).total_seconds() > 0: 
+    statefile.write_text(d.isoformat(timespec='seconds'))
+    print(f"local state -> {d.isoformat(timespec='seconds')}")
 print(f"{backup_compressed} pushed!")
+exit(0)
