@@ -5,6 +5,7 @@ compression = "xz" # gz, bz2
 home = Path.home()
 files = [
     # home / ".config/VsCodium/product.json", 
+    home / ".config/libreoffice/4/user/", 
     home / ".config/awesome/themes/",
     home / ".config/awesome/rc.lua",
     home / ".config/picom/picom.conf", 
