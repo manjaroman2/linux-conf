@@ -7,7 +7,14 @@ import subprocess
 from common import rclonedir, compression, files, home, statefile, basepath
 
 backup = basepath / "backup"
-state = datetime.datetime.fromisoformat(statefile.read_text())
+
+if not statefile.is_file() or statefile.read_text() == "": 
+    print("new machine!")
+    # statefile.write_text(datetime.datetime.now().isoformat(timespec='seconds'))
+    statefile.touch()
+    state = datetime.datetime.fromtimestamp(0)
+else:
+    state = datetime.datetime.fromisoformat(statefile.read_text())
 
 if not backup.is_dir():
     if backup.exists():
