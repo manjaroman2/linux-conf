@@ -5,11 +5,13 @@ compression = "xz" # gz, bz2
 home = Path.home()
 files = [
     # home / ".config/VsCodium/product.json", 
-    # home / ".config/awesome/rc.lua",
-    # home / ".config/awesome/themes/",
+    home / ".config/awesome/themes/",
+    home / ".config/awesome/rc.lua",
     home / ".config/picom/picom.conf", 
     home / ".config/alacritty/alacritty.yml",
     home / ".config/mimeapps.list", 
+    home / ".config/rclone/rclone.conf", 
+    home / "bin/pwb", 
     home / "bin/sampdl", 
     home / "bin/imgur", 
     home / "docs/bitwardenpw",
