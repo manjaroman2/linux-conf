@@ -82,7 +82,7 @@ bcs = backup_compressed.stat().st_size
 print(
     f"Backup size: {convert_size(bs)}\t>>>\t{convert_size(bcs)} compressed ({round(bcs/bs*100, 1)}%)")
 shutil.rmtree(backup) 
-subprocess.run(["rclone", "copy", "-L", "-P", backup_compressed, rclonedir])
+subprocess.run(["rclone", "copy", "-L", "-P", "-M", backup_compressed, rclonedir])
 backup_compressed.unlink()
 if (d - state).total_seconds() > 0: 
     statefile.write_text(d.isoformat(timespec='seconds'))

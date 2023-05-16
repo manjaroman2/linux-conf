@@ -39,7 +39,7 @@ remotebackups = sorted(remotebackups, key=lambda x: x[0], reverse=True)
 for d, f in remotebackups:
     if (d - state).total_seconds() > 0: 
         print(f"-> fetching {f}!")
-        subprocess.run(["rclone", "copy", "-P", f"{rclonedir}/{f}", basepath])
+        subprocess.run(["rclone", "copy", "-P", "-M", "{rclonedir}/{f}", basepath])
         backuptar = basepath / f 
         def filter_func(info):
             print(info)
