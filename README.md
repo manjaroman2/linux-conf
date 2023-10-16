@@ -8,6 +8,14 @@ For this to work you need to configure [rclone](https://rclone.org/) on your sys
 
 Run `$ pushconf --ask` and save the backup if you want to be very safe. 
 
-#### TODO 
+#### How to use quick
+
+1. Setup rclone 
+2. `git clone git@github.com:manjaroman2/linux-conf.git && cd linux-conf && chmod +x setup.sh && ./setup.sh`
+3. `pushconf --ask`
+4. `pullconf`
+
+
+#### TODO for Developers
 
 * Implement loading local backups 
