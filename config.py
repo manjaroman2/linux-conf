@@ -42,10 +42,6 @@ more_files = [
     config_path / "awesome/rc.lua",
     config_path / "picom/picom.conf", # Picom settings 
 
-    config_path / "Code/User/settings.json", # Vscode settings
-    config_path / "Code/User/keybindings.json",
-    config_path / "Code/User/snippets/",
-
     config_path / "xournalpp/colornames.ini", # Xournalpp settings
     config_path / "xournalpp/palette.gpl",
     config_path / "xournalpp/plugins/",
