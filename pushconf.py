@@ -60,6 +60,11 @@ def make_tarfile(output_filename, source_dir: Path, compression="xz"):
     def filter_func(info):
         print("+ " + info.name)
         info.mtime = 0 # So the hashes will match
+        info.uid = 0
+        info.uname = ''
+        info.gid = 0
+        info.gname = ''
+        info.pax_headers = {}
         return info 
     with tarfile.open(output_filename, f"w:{compression}") as tar:
         tar.add(source_dir, arcname=source_dir.stem, filter=filter_func)
@@ -81,10 +86,11 @@ hashed = hash_bytes(backup_compressed.read_bytes())
 print(state[1] + " <-- old state")
 print(hashed + " <-- new state")
 if hashed == state[1]:
-    if (ask := str(input("  New backup is identical to current state. \nDo you want to proceed? [y|N]") or "N").lower()) != "y":
-        shutil.rmtree(backup)
-        backup_compressed.unlink()
-        exit(1)
+    print("  No changes since last backup. Exiting.")
+    # if (ask := str(input("  New backup is identical to current state. \nDo you want to proceed? [y|N]") or "N").lower()) != "y":
+    shutil.rmtree(backup)
+    backup_compressed.unlink()
+    exit(1)
         
 bs = dirsize(backup)
 bcs = backup_compressed.stat().st_size

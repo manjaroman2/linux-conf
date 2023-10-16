@@ -1,7 +1,7 @@
 
 import subprocess
 from pathlib import Path 
-import datetime
+from datetime import datetime
 import tarfile
 import shutil
 from common import rclone_lsf, rclone_copy, basepath, init_state, write_state, hash_bytes, has_bin_path
@@ -15,7 +15,7 @@ for f in subprocess.run(rclone_lsf, capture_output=True, text=True).stdout.strip
     while x.suffixes:
         x = Path(x.stem)
     if x.name.startswith("backup-"):
-        d = datetime.datetime.fromisoformat(x.name[7:])
+        d = datetime.fromisoformat(x.name[7:])
         remotebackups.append((d, f)) 
         # print(f"backup #{i}:", d)
 
@@ -29,7 +29,32 @@ print(f" Found {len(valid_remote_backups)} newer backups on remote. ")
 valid_remote_backups = sorted(valid_remote_backups, key=lambda x: x[0])
 i = len(valid_remote_backups)-1
 for d, f in valid_remote_backups:
-    print(f"[{i}] {f}")
+    dt = (datetime.now() - d)
+    days = dt.days
+    if days == 0:
+        days = ""
+    else:
+        days = f"{days:3} days "
+    hours = dt.seconds//3600
+    if hours == 0:
+        hours = ""
+    else:
+        hours = f"{hours:2} hours "
+    # minutes = (dt.seconds//60)%60
+    # if (minutes == 0):
+    #     minutes = ""
+    # else:
+    #     minutes = f"{minutes:2} minutes "
+    j = f"[{i:2}"
+    if i % 2 == 0:
+        j += "]--"
+        if days == "":
+            days = "--------"
+    else:
+        j += "]  "
+    # print(f"{j:5} {days:9}{hours:9}{minutes:11}ago  ({''.join(Path(f).suffixes)})")
+    print(f"{j}{days:9} {hours:9}ago  ({''.join(Path(f).suffixes)})")
+
     i -= 1
 idx = len(valid_remote_backups) - 1- int(input(f" Which backup to load [0-{len(valid_remote_backups)-1}]?  [0]") or "0")
 print(idx)
@@ -45,7 +70,10 @@ for obj in Path(backup_path).glob("*"):
     dst = home / obj.relative_to(backup_path)
     print(dst)
     if obj.is_dir():
-        shutil.copytree(obj, dst, dirs_exist_ok=True)
+        try:
+            shutil.copytree(obj, dst, dirs_exist_ok=True)
+        except shutil.Error as e:
+            print(e)
     elif obj.is_file():
         shutil.copyfile(obj, dst) 
     else:
