@@ -25,3 +25,4 @@ Run `$ pushconf --ask` and save the backup if you want to be very safe.
 
 * Implement loading local backups 
 * Config for dummies? No.
+* Crontab? No? 
