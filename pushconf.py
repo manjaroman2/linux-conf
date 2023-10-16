@@ -1,20 +1,20 @@
+import os
 import math
 from pathlib import Path
 import shutil
 import tarfile
 import datetime
 import subprocess
-from common import rclonedir, compression, files, home, statefile, basepath
+from config import files, home, compression
+from common import init_state, rclone_send, datetime_serialize, write_state, hash_bytes
+from common import backup_path as backup
+import argparse 
 
-backup = basepath / "backup"
+parser = argparse.ArgumentParser()
+parser.add_argument("-a", "--ask", action='store_true')
+args = parser.parse_args()
 
-if not statefile.is_file() or statefile.read_text() == "": 
-    print("new machine!")
-    # statefile.write_text(datetime.datetime.now().isoformat(timespec='seconds'))
-    statefile.touch()
-    state = datetime.datetime.fromtimestamp(0)
-else:
-    state = datetime.datetime.fromisoformat(statefile.read_text())
+state = init_state()
 
 if not backup.is_dir():
     if backup.exists():
@@ -26,9 +26,8 @@ if not backup.is_dir():
     backup.mkdir()
 else:
     if f := list(backup.glob("./*")):
-        ow = input(
-            f"{len(f)} files exist in {backup}. \nDo you want to delete everything in the directory? [y/N] " or "N")
-        if ow != "y":
+        if (ow := str(input(
+            f"{len(f)} files exist in {backup}. \nDo you want to delete everything in the directory? [Y|n] " or "Y")).lower()) == "y":
             exit(1)
         shutil.rmtree(backup)
         backup.mkdir()
@@ -59,33 +58,48 @@ def convert_size(size_bytes):
 
 def make_tarfile(output_filename, source_dir: Path, compression="xz"):
     def filter_func(info):
-        print(info.name)
+        print("+ " + info.name)
+        info.mtime = 0 # So the hashes will match
         return info 
     with tarfile.open(output_filename, f"w:{compression}") as tar:
-            
         tar.add(source_dir, arcname=source_dir.stem, filter=filter_func)
 
 
 def dirsize(path):
-    import os
     return sum(os.path.getsize(os.path.join(dirpath, filename)) for dirpath, _, filenames in os.walk(path) for filename in filenames)
 
 
 c = f".{compression}" if compression else ""
 d = datetime.datetime.now()
-backup_compressed = backup.parent / f"backup-{d.isoformat(timespec='seconds')}.tar{c}"
+backup_compressed = backup.parent / f"backup-{datetime_serialize(d)}.tar{c}"
+
+
 print(f"Compressing {compression} file: {backup_compressed.name}")
 make_tarfile(backup_compressed, backup, compression)
 
+hashed = hash_bytes(backup_compressed.read_bytes())
+print(state[1] + " <-- old state")
+print(hashed + " <-- new state")
+if hashed == state[1]:
+    if (ask := str(input("  New backup is identical to current state. \nDo you want to proceed? [y|N]") or "N").lower()) != "y":
+        shutil.rmtree(backup)
+        backup_compressed.unlink()
+        exit(1)
+        
 bs = dirsize(backup)
 bcs = backup_compressed.stat().st_size
 print(
     f"Backup size: {convert_size(bs)}\t>>>\t{convert_size(bcs)} compressed ({round(bcs/bs*100, 1)}%)")
-shutil.rmtree(backup) 
-subprocess.run(["rclone", "copy", "-L", "-P", "-M", backup_compressed, rclonedir])
+shutil.rmtree(backup)
+
+if args.ask: 
+    if (ask := str(input("Send it?  [Y|n]") or "Y").lower()) == "y":
+        subprocess.run(rclone_send(backup_compressed))
+        print(f"{backup_compressed} pushed!")
+else:
+    subprocess.run(rclone_send(backup_compressed))
+    print(f"{backup_compressed} pushed!")
 backup_compressed.unlink()
-if (d - state).total_seconds() > 0: 
-    statefile.write_text(d.isoformat(timespec='seconds'))
-    print(f"local state -> {d.isoformat(timespec='seconds')}")
-print(f"{backup_compressed} pushed!")
+if (d - state[0]).total_seconds() > 0: 
+    print(f"local state -> {write_state(d, hashed)}")
 exit(0)

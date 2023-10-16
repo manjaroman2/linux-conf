@@ -1,27 +1,62 @@
 from pathlib import Path 
-rclonedir = "remote:arch-conf"
-compression = "xz" # gz, bz2
+import datetime
+import hashlib
+import shutil
 
-home = Path.home()
-files = [
-    # home / ".config/VsCodium/product.json", 
-    home / ".config/libreoffice/4/user/", 
-    home / ".config/awesome/themes/",
-    home / ".config/awesome/rc.lua",
-    home / ".config/picom/picom.conf", 
-    home / ".config/alacritty/alacritty.yml",
-    home / ".config/mimeapps.list", 
-    home / ".config/rclone/rclone.conf",
-    home / "bin/",  
-    # home / "bin/pwb", 
-    # home / "bin/sampdl", 
-    # home / "bin/imgur", 
-    home / "docs/bitwardenpw",
-    home / "todo", 
-    home / ".bashrc",
-    home / ".nvimrc",
-    home / ".xinitrc"
-]
+import config 
+from config import rclonedir, files
 
 basepath = Path(__file__).resolve().parent
+has_bin_path = hasattr(config, "bin_path") 
+if has_bin_path:
+    from config import bin_path 
+    pushconf_sh = (bin_path / "pushconf", 
+    f"""#!/usr/bin/bash
+    cd {str(basepath)} && python pushconf.py $@ && cd -
+    """)
+    pullconf_sh = (bin_path / "pullconf", 
+    f"""#!/usr/bin/bash
+    cd {str(basepath)} && python pullconf.py $@ && cd -
+    """)
+    files.append(pushconf_sh[0])
+    files.append(pullconf_sh[0])
+
+backup_path = basepath / "backup"
 statefile = basepath / ".state"
+
+rclone_lsf = ["rclone", "lsf", rclonedir]
+rclone_copy = lambda remote_path = "": ["rclone", "copy", "-P", "-M", Path(rclonedir) / remote_path, basepath]
+rclone_send = lambda backup_compressed: ["rclone", "copy", "-L", "-P", "-M", backup_compressed, rclonedir]
+datetime_serialize = lambda d: d.isoformat(timespec='seconds')
+
+def init_state() -> datetime.datetime:
+    if not statefile.is_file() or statefile.read_text() == "": 
+        print("New machine!")
+        if has_bin_path:
+            from config import bin_path
+            if (ask := str(input(f"write bash scripts to {bin_path}? [Y|n]") or "Y").lower()) == "y": 
+                import stat 
+                pushconf_sh[0].write_text(pushconf_sh[1])
+                pullconf_sh[0].write_text(pullconf_sh[1])
+                pushconf_sh[0].chmod(pushconf_sh[0].stat().st_mode | stat.S_IEXEC)
+                pullconf_sh[0].chmod(pullconf_sh[0].stat().st_mode | stat.S_IEXEC)
+        else:
+            print(" No bin_path in config. No scripts will be written. ")
+        statefile.touch()
+        dt = datetime.datetime.fromtimestamp(0)
+        hashed = ''
+    else:
+        sp = statefile.read_text().split(' ')
+        dt = datetime.datetime.fromisoformat(sp[0])
+        hashed = sp[1]
+    return dt, hashed
+
+def write_state(d: datetime.datetime, hashed: str) -> str:
+    s = datetime_serialize(d)
+    statefile.write_text(f"{s} {hashed}")
+    return s 
+
+def hash_bytes(data: bytes) -> str:
+    o = hashlib.sha256()
+    o.update(data)
+    return o.hexdigest()
