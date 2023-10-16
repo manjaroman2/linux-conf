@@ -18,6 +18,7 @@ add_files_from_dir(
 config_path = home / ".config/"
 
 more_files = [
+    config_path / "rclone/rclone.conf", # This is important, don't remove this
     home / ".ssh/",
     home / "docs/bitwardenpw",
     home / "todo", 
@@ -33,7 +34,6 @@ more_files = [
     config_path / "picom/picom.conf", 
     config_path / "alacritty/alacritty.yml",
     config_path / "mimeapps.list", 
-    config_path / "rclone/rclone.conf",
     config_path / "xournalpp/colornames.ini",
     config_path / "xournalpp/palette.gpl",
     config_path / "xournalpp/plugins/",

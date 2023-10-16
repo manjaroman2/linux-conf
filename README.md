@@ -10,12 +10,18 @@ Run `$ pushconf --ask` and save the backup if you want to be very safe.
 
 #### How to use quick
 
+(0. Know a little bit of python :] ) 
 1. Setup rclone 
 2. `git clone git@github.com:manjaroman2/linux-conf.git && cd linux-conf && chmod +x setup.sh && ./setup.sh`
 3. `pushconf --ask`
 4. `pullconf`
 
+#### How configure rclone???? 
+1. Open some bash or zsh or whatever and install rclone from your package manager
+2. `rclone config` and follow instructions
+3. It will create a rclone.conf file somewhere, you probably want to include it in [config.py](config.py)
 
 #### TODO for Developers
 
 * Implement loading local backups 
+* Config for dummies? No.
