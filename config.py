@@ -18,6 +18,7 @@ add_files_from_dir(
 config_path = home / ".config/"
 
 more_files = [
+    home / ".ssh/",
     home / "docs/bitwardenpw",
     home / "todo", 
     home / ".bashrc",
