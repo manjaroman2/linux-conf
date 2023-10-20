@@ -37,7 +37,7 @@ for f in files:
     if not f.exists():
         print(f"{f} does not exist. Skipping")
         continue
-    if f not in home: 
+    if f not in home.parents: 
         abs_files.append(f)
         p = backup / f.relative_to("/")
     else:
