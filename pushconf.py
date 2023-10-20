@@ -37,11 +37,11 @@ for f in files:
     if not f.exists():
         print(f"{f} does not exist. Skipping")
         continue
-    if f not in home.parents: 
-        abs_files.append(f)
-        p = backup / f.relative_to("/")
-    else:
-        p = backup / f.relative_to(home)
+    # if f not in home.parents: 
+    #     abs_files.append(f)
+    p = backup / f.relative_to("/")
+    # else:
+    #     p = backup / f.relative_to(home)
     if not p.parent.exists():
         p.parent.mkdir(parents=True)
     if f.is_dir():
