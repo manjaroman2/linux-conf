@@ -48,7 +48,7 @@ more_files = [
     config_path / "xournalpp/settings.xml",
     config_path / "xournalpp/metadata",
     
-    Path("/usr/share/xournalpp/"), 
+    # Path("/usr/share/xournalpp/"), 
 
     config_path / "alacritty/alacritty.yml", # Alacritty settings
 
