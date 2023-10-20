@@ -30,22 +30,14 @@ rclone_send = lambda backup_compressed: ["rclone", "copy", "-L", "-P", "-M", bac
 datetime_serialize = lambda d: d.isoformat(timespec='seconds')
 
 def init_state() -> datetime.datetime:
+    if has_bin_path:
+        import stat 
+        pushconf_sh[0].write_text(pushconf_sh[1])
+        pullconf_sh[0].write_text(pullconf_sh[1])
+        pushconf_sh[0].chmod(pushconf_sh[0].stat().st_mode | stat.S_IEXEC)
+        pullconf_sh[0].chmod(pullconf_sh[0].stat().st_mode | stat.S_IEXEC)
     if not statefile.is_file() or statefile.read_text() == "": 
         print("New machine!")
-        if has_bin_path:
-            import stat 
-            pushconf_sh[0].write_text(pushconf_sh[1])
-            pullconf_sh[0].write_text(pullconf_sh[1])
-            pushconf_sh[0].chmod(pushconf_sh[0].stat().st_mode | stat.S_IEXEC)
-            pullconf_sh[0].chmod(pullconf_sh[0].stat().st_mode | stat.S_IEXEC)
-            # from config import bin_path
-            # if (ask := str(input(f"write bash scripts to {bin_path}? [Y|n]") or "Y").lower()) == "y": 
-            #     pushconf_sh[0].write_text(pushconf_sh[1])
-            #     pullconf_sh[0].write_text(pullconf_sh[1])
-            #     pushconf_sh[0].chmod(pushconf_sh[0].stat().st_mode | stat.S_IEXEC)
-            #     pullconf_sh[0].chmod(pullconf_sh[0].stat().st_mode | stat.S_IEXEC)
-        else:
-            print(" No bin_path in config. No scripts will be written. ")
         statefile.touch()
         dt = datetime.datetime.fromtimestamp(0)
         hashed = ''
