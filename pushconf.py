@@ -79,7 +79,6 @@ def dirsize(path):
     return sum(os.path.getsize(os.path.join(dirpath, filename)) for dirpath, _, filenames in os.walk(path) for filename in filenames)
 
 
-input("")
 c = f".{compression}" if compression else ""
 d = datetime.datetime.now()
 backup_compressed = backup.parent / f"backup-{datetime_serialize(d)}.tar{c}"
