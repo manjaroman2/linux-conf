@@ -66,8 +66,9 @@ backuptar = basepath / f
 with tarfile.open(backuptar) as tar: 
     tar.extractall(basepath)
 backup_path = basepath / "backup"
+root_path = Path.home().parts[0]
 for obj in Path(backup_path).glob("*"):
-    dst = home / obj.relative_to(backup_path)
+    dst = root_path / obj.relative_to(backup_path)
     print(dst)
     if obj.is_dir():
         try:
