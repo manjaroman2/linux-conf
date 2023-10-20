@@ -5,7 +5,7 @@ import shutil
 import tarfile
 import datetime
 import subprocess
-from config import files, home, compression
+from config import files, compression
 from common import init_state, rclone_send, datetime_serialize, write_state, hash_bytes
 from common import backup_path as backup
 import argparse 
