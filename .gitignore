@@ -1,3 +1,4 @@
 testdir 
 __pycache__
 .state
+backup/

@@ -15,6 +15,7 @@ parser.add_argument("-a", "--ask", action='store_true')
 args = parser.parse_args()
 
 state = init_state()
+abs_files = []
 
 if not backup.is_dir():
     if backup.exists():
@@ -36,7 +37,11 @@ for f in files:
     if not f.exists():
         print(f"{f} does not exist. Skipping")
         continue
-    p = backup / f.relative_to(home)
+    if f not in home: 
+        abs_files.append(f)
+        p = backup / f.relative_to("/")
+    else:
+        p = backup / f.relative_to(home)
     if not p.parent.exists():
         p.parent.mkdir(parents=True)
     if f.is_dir():
@@ -74,6 +79,7 @@ def dirsize(path):
     return sum(os.path.getsize(os.path.join(dirpath, filename)) for dirpath, _, filenames in os.walk(path) for filename in filenames)
 
 
+input("")
 c = f".{compression}" if compression else ""
 d = datetime.datetime.now()
 backup_compressed = backup.parent / f"backup-{datetime_serialize(d)}.tar{c}"
