@@ -12,7 +12,7 @@ if has_bin_path:
     from config import bin_path 
     pushconf_sh = (bin_path / "pushconf", 
     f"""#!/usr/bin/bash
-    cd {str(basepath)} && git commit -am "pushconf" && git push && python pushconf.py $@ && cd -
+    cd {str(basepath)} && git commit -am "pushconf" && (git push &) && python pushconf.py $@ && cd -
     """)
     pullconf_sh = (bin_path / "pullconf", 
     f"""#!/usr/bin/bash
