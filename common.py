@@ -33,13 +33,17 @@ def init_state() -> datetime.datetime:
     if not statefile.is_file() or statefile.read_text() == "": 
         print("New machine!")
         if has_bin_path:
-            from config import bin_path
-            if (ask := str(input(f"write bash scripts to {bin_path}? [Y|n]") or "Y").lower()) == "y": 
-                import stat 
-                pushconf_sh[0].write_text(pushconf_sh[1])
-                pullconf_sh[0].write_text(pullconf_sh[1])
-                pushconf_sh[0].chmod(pushconf_sh[0].stat().st_mode | stat.S_IEXEC)
-                pullconf_sh[0].chmod(pullconf_sh[0].stat().st_mode | stat.S_IEXEC)
+            import stat 
+            pushconf_sh[0].write_text(pushconf_sh[1])
+            pullconf_sh[0].write_text(pullconf_sh[1])
+            pushconf_sh[0].chmod(pushconf_sh[0].stat().st_mode | stat.S_IEXEC)
+            pullconf_sh[0].chmod(pullconf_sh[0].stat().st_mode | stat.S_IEXEC)
+            # from config import bin_path
+            # if (ask := str(input(f"write bash scripts to {bin_path}? [Y|n]") or "Y").lower()) == "y": 
+            #     pushconf_sh[0].write_text(pushconf_sh[1])
+            #     pullconf_sh[0].write_text(pullconf_sh[1])
+            #     pushconf_sh[0].chmod(pushconf_sh[0].stat().st_mode | stat.S_IEXEC)
+            #     pullconf_sh[0].chmod(pullconf_sh[0].stat().st_mode | stat.S_IEXEC)
         else:
             print(" No bin_path in config. No scripts will be written. ")
         statefile.touch()

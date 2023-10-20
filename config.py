@@ -46,6 +46,7 @@ more_files = [
     config_path / "xournalpp/palette.gpl",
     config_path / "xournalpp/plugins/",
     config_path / "xournalpp/settings.xml",
+    config_path / "xournalpp/metadata",
 
     config_path / "alacritty/alacritty.yml", # Alacritty settings
 
