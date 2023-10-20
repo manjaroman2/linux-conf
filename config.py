@@ -22,7 +22,7 @@ home = Path.home()
 bin_path = home / "bin/"  
 add_files_from_dir(
     bin_path, 
-    "duh gt pwb uni connect-wifi sampdl " # write the names of the scripts here
+    "duh gt pwb uni connect-wifi sampdl fix_wacom.sh " # write the names of the scripts here
     # If you don't want to save any scripts, just leave it blank
 )
 
