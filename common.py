@@ -6,10 +6,17 @@ import config
 from config import rclonedir, files
 
 pullconf_sh_build = lambda p: f"""#!/usr/bin/bash
-cd {str(basepath)} && git pull > /dev/null 2>&1 && python pullconf.py $@ && cd -
+cd {p}
+git pull &> /dev/null 
+python pullconf.py $@ 
+cd -
 """ 
 pushconf_sh_build = lambda p: f"""#!/usr/bin/bash
-cd {p} && git commit -am "pushconf" > /dev/null 2>&1 && git push > /dev/null 2>&1 && python pushconf.py $@ && cd -
+cd {p} 
+git commit -am "pushconf" &> /dev/null 
+git push &> /dev/null 
+python pushconf.py $@ 
+cd -
 """
 basepath = Path(__file__).resolve().parent
 has_bin_path = hasattr(config, "bin_path") 
