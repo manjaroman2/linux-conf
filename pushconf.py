@@ -95,7 +95,7 @@ if hashed == state[1]:
     # if (ask := str(input("  New backup is identical to current state. \nDo you want to proceed? [y|N]") or "N").lower()) != "y":
     shutil.rmtree(backup)
     backup_compressed.unlink()
-    exit(1)
+    quit(1)
         
 bs = dirsize(backup)
 bcs = backup_compressed.stat().st_size
@@ -113,4 +113,3 @@ else:
 backup_compressed.unlink()
 if (d - state[0]).total_seconds() > 0: 
     print(f"local state -> {write_state(d, hashed)}")
-exit(0)
