@@ -8,8 +8,16 @@ from config import rclonedir, files
 pullconf_sh_build = lambda p: f"""#!/usr/bin/bash
 oldpwd=$(pwd)
 cd {p}
-git pull &> /dev/null 
-python pullconf.py $@ 
+echo "checking internet connection" 
+python checkhimpc.py
+hasNet=$?
+if [ $hasNet -ne 0 ]; then
+    echo "  ✓ has internet" 
+    git pull &> /dev/null 
+    python pullconf.py $@ 
+else
+    echo "  ❌ no internet, exiting"
+fi 
 cd $oldpwd
 """ 
 pushconf_sh_build = lambda p: f"""#!/usr/bin/bash
@@ -61,6 +69,6 @@ def write_state(d: datetime.datetime, hashed: str) -> str:
     return s 
 
 def hash_bytes(data: bytes) -> str:
-    o = hashlib.sha256()
+    o = hashlib.sha512()
     o.update(data)
     return o.hexdigest()
