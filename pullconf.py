@@ -38,8 +38,8 @@ for f in (
         remotebackups.append((d, f))
         # print(f"backup #{i}:", d)
 
-print(f"Found {len(remotebackups)} backups on remote. ")
-print(state[1] + "  <-- local state")
+print(f"  Found {len(remotebackups)} backups")
+print('  ' + state[1][:16] + "...  <-- local state")
 if not args.force:
     valid_remote_backups = [
         (d, f) for d, f in remotebackups if (d - state[0]).total_seconds() > 0
@@ -48,7 +48,7 @@ else:
     valid_remote_backups = remotebackups
 if not args.just_dl:
     if len(valid_remote_backups) == 0:
-        print("  No newer backups on remote than local state")
+        print("  Is already on newest state. Exiting")
         exit(1)
     print(f" Found {len(valid_remote_backups)} newer backups on remote. ")
 valid_remote_backups = sorted(valid_remote_backups, key=lambda x: x[0])
