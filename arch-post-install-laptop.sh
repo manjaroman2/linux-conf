@@ -1,3 +1,3 @@
 #!/usr/bin/bash
 
-sudo pacman -S tlp powertop
+sudo pacman -S tlp powertop alacritty 

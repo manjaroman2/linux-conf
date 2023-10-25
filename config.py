@@ -50,6 +50,8 @@ more_files = [
     
     Path("/usr/share/xournalpp/"), 
 
+    config_path / "fontconfig/conf.d",
+
     config_path / "alacritty/alacritty.yml", # Alacritty settings
 
     config_path / "libreoffice/4/user/template/", # Libreoffice templates 
