@@ -66,7 +66,8 @@ def make_tarfile(output_filename, source_dir: Path, compression="xz"):
     curr_dir = None 
     level = 0
     def filter_func(info: tarfile.TarInfo):
-        global curr_dir, level
+        global curr_dir
+        global level
         if info.isdir():
             curr_dir = Path(info.name) 
             print(" "* level + "📁 " + info.name)
@@ -77,7 +78,7 @@ def make_tarfile(output_filename, source_dir: Path, compression="xz"):
                 curr_dir = None 
                 print("+ " + info.name)
         else:
-            
+
             print("+ " + info.name)
             
         info.mtime = 0 # So the hashes will match
