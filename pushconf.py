@@ -62,8 +62,19 @@ def convert_size(size_bytes):
 
 
 def make_tarfile(output_filename, source_dir: Path, compression="xz"):
-    def filter_func(info):
-        print("+ " + info.name)
+    is_in_dir = False
+    curr_dir = None 
+    def filter_func(info: tarfile.TarInfo):
+        if info.isdir():
+            curr_dir = Path(info) 
+            print("+ " + info.name)
+        elif curr_dir:
+            if curr_dir not in Path(info).parents:
+                curr_dir = None 
+                print("+ " + info.name)
+        else:
+            print("+ " + info.name)
+            
         info.mtime = 0 # So the hashes will match
         info.uid = 0
         info.uname = ''
