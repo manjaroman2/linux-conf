@@ -47,7 +47,6 @@ for f in files:
         shutil.copyfile(f, p)
     # print(f"  {f} -> {p}")
 
-
 def convert_size(size_bytes):
     if size_bytes == 0:
         return "0B"

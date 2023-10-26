@@ -13,7 +13,9 @@ python checkhimpc.py
 hasNet=$?
 if [ $hasNet -ne 0 ]; then
     echo "  ✓ has internet" 
+    echo "git pull" 
     git pull &> /dev/null 
+    echo "pullconf.py" 
     python pullconf.py $@ 
 else
     echo "  ❌ no internet, exiting"
@@ -23,9 +25,21 @@ cd $oldpwd
 pushconf_sh_build = lambda p: f"""#!/usr/bin/bash
 oldpwd=$(pwd)
 cd {p} 
-git commit -am "pushconf" &> /dev/null 
-git push &> /dev/null 
-python pushconf.py $@ 
+echo "checking internet connection" 
+python checkhimpc.py
+hasNet=$?
+if [ $hasNet -ne 0 ]; then
+    echo "  ✓ has internet" 
+    echo "git commit" 
+    git commit -am "pushconf" &> /dev/null 
+    echo "git push" 
+    git push &> /dev/null 
+    echo "pushconf.py" 
+    python pushconf.py $@ 
+else
+    echo "  ❌ no internet, exiting"
+fi 
+
 cd $oldpwd
 """
 basepath = Path(__file__).resolve().parent
