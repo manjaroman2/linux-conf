@@ -65,6 +65,7 @@ def make_tarfile(output_filename, source_dir: Path, compression="xz"):
     is_in_dir = False
     curr_dir = None 
     def filter_func(info: tarfile.TarInfo):
+        global curr_dir
         if info.isdir():
             curr_dir = Path(info.name) 
             print("+ " + info.name)
