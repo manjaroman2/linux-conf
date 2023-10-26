@@ -73,30 +73,28 @@ def make_tarfile(output_filename, source_dir: Path, compression="xz"):
         def fill(self):
             return self.fillchar*self.level
     def filter_func(info: tarfile.TarInfo, t: T):
-        this_path = Path(info.name)
-        print(t.curr_dir, this_path.as_posix().upper())
-        if info.isdir():
-            if t.curr_dir:
-                # print(t.curr_dir, list(this_path.parents))
-                if t.curr_dir not in this_path.parents: # Not subdir
-                    # print(t.curr_dir.parts, this_path.parent.name) 
-                    t.level = t.curr_dir.parts.index(this_path.parent.name)-1
-                    t.levelcount = 0
-            t.curr_dir = this_path 
-            print(t.fill() + "📁 " + t.curr_dir.parts[t.level])
-            t.level += 1
-            t.levelcount = 0
-        elif t.curr_dir:
-            # print(t.curr_dir)
-            if t.curr_dir not in this_path.parents:
-                t.level = 0
-                t.levelcount = 0
-                t.curr_dir = None 
-                print("+ " + this_path.as_posix())
-            else:
-                print(t.fill(), this_path.name)
-        else:
-            print("+ " + info.name)
+        # this_path = Path(info.name)
+        # print(t.curr_dir, this_path.as_posix().upper())
+        # if info.isdir():
+        #     if t.curr_dir:
+        #         if t.curr_dir not in this_path.parents: # Not subdir
+        #             t.level = t.curr_dir.parts.index(this_path.parent.name)
+        #             t.levelcount = 0
+        #     t.curr_dir = this_path 
+        #     print(t.fill() + "📁 " + t.curr_dir.parts[t.level])
+        #     t.level += 1
+        #     t.levelcount = 0
+        # elif t.curr_dir:
+        #     # print(t.curr_dir)
+        #     if t.curr_dir not in this_path.parents:
+        #         t.level = 0
+        #         t.levelcount = 0
+        #         t.curr_dir = None 
+        #         print("+ " + this_path.as_posix())
+        #     else:
+        #         print(t.fill(), this_path.name)
+        # else:
+        #     print("+ " + info.name)
             
         info.mtime = 0 # So the hashes will match
         info.uid = 0
