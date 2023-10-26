@@ -64,16 +64,20 @@ def convert_size(size_bytes):
 def make_tarfile(output_filename, source_dir: Path, compression="xz"):
     is_in_dir = False
     curr_dir = None 
+    level = 0
     def filter_func(info: tarfile.TarInfo):
-        global curr_dir
+        global curr_dir, level
         if info.isdir():
             curr_dir = Path(info.name) 
-            print("+ 📁 " + info.name)
+            print(" "* level + "📁 " + info.name)
+            level += 1
         elif curr_dir:
             if curr_dir not in Path(info.name).parents:
+                level = 0
                 curr_dir = None 
                 print("+ " + info.name)
         else:
+            
             print("+ " + info.name)
             
         info.mtime = 0 # So the hashes will match
