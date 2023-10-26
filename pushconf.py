@@ -66,10 +66,10 @@ def make_tarfile(output_filename, source_dir: Path, compression="xz"):
     curr_dir = None 
     def filter_func(info: tarfile.TarInfo):
         if info.isdir():
-            curr_dir = Path(info) 
+            curr_dir = Path(info.name) 
             print("+ " + info.name)
         elif curr_dir:
-            if curr_dir not in Path(info).parents:
+            if curr_dir not in Path(info.name).parents:
                 curr_dir = None 
                 print("+ " + info.name)
         else:
