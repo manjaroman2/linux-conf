@@ -29,36 +29,36 @@ add_files_from_dir(
 # Add more 
 config_path = home / ".config/"
 more_files = [
-    config_path / "rclone/rclone.conf", # This mirrors the rclone config file 
-    home / ".ssh/", # Failes on pull, because of permissions. Probably just leave it for now TODO:Solution? 
+    # config_path / "rclone/rclone.conf", # This mirrors the rclone config file 
+    # home / ".ssh/", # Failes on pull, because of permissions. Probably just leave it for now TODO:Solution? 
 
-    home / ".bashrc", # This is very nice 
-    home / ".nvimrc",
-    home / ".xinitrc",
-    config_path / "mimeapps.list", # No more annoying file associations 
-    config_path / "user-dirs.dirs",
+    # home / ".bashrc", # This is very nice 
+    # home / ".nvimrc",
+    # home / ".xinitrc",
+    # config_path / "mimeapps.list", # No more annoying file associations 
+    # config_path / "user-dirs.dirs",
 
-    config_path / "awesome/themes/", # If you use awesome wm, this is very nice
-    config_path / "awesome/rc.lua",
-    config_path / "picom/picom.conf", # Picom settings 
+    # config_path / "awesome/themes/", # If you use awesome wm, this is very nice
+    # config_path / "awesome/rc.lua",
+    # config_path / "picom/picom.conf", # Picom settings 
 
-    config_path / "xournalpp/colornames.ini", # Xournalpp settings
-    config_path / "xournalpp/palette.gpl",
-    config_path / "xournalpp/plugins/",
-    config_path / "xournalpp/settings.xml",
-    config_path / "xournalpp/metadata",
+    # config_path / "xournalpp/colornames.ini", # Xournalpp settings
+    # config_path / "xournalpp/palette.gpl",
+    # config_path / "xournalpp/plugins/",
+    # config_path / "xournalpp/settings.xml",
+    # config_path / "xournalpp/metadata",
     
     Path("/usr/share/xournalpp/"), 
 
-    config_path / "fontconfig/conf.d",
+    # config_path / "fontconfig/conf.d",
 
-    config_path / "alacritty/alacritty.yml", # Alacritty settings
+    # config_path / "alacritty/alacritty.yml", # Alacritty settings
 
-    config_path / "libreoffice/4/user/template/", # Libreoffice templates 
-    home / ".ipython", 
+    # config_path / "libreoffice/4/user/template/", # Libreoffice templates 
+    # home / ".ipython", 
 
-    home / "docs/bitwardenpw",      # Super secret password file
-    home / "todo",                  # Todo list 
+    # home / "docs/bitwardenpw",      # Super secret password file
+    # home / "todo",                  # Todo list 
 ]
 
 # ----------------------------------------------------------------------------- #
