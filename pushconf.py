@@ -12,6 +12,7 @@ import argparse
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-a", "--ask", action='store_true')
+parser.add_argument("--debug", action='store_true')
 args = parser.parse_args()
 
 state = init_state()
@@ -136,7 +137,8 @@ bcs = backup_compressed.stat().st_size
 print(
     f"Backup size: {convert_size(bs)}\t>>>\t{convert_size(bcs)} compressed ({round(bcs/bs*100, 1)}%)")
 shutil.rmtree(backup)
-
+if args.debug:
+    exit(0)
 if args.ask: 
     if (ask := str(input("Send it?  [Y|n]") or "Y").lower()) == "y":
         subprocess.run(rclone_send(backup_compressed))
