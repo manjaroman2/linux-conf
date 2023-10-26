@@ -64,27 +64,35 @@ def convert_size(size_bytes):
 def make_tarfile(output_filename, source_dir: Path, compression="xz"):
     class T:
         def __init__(self) -> None:
+            self.fillchar = "--"
             self.level = 0
             self.curr_dir: Path = None
+            self.levelcount = 0
+        def fill(self):
+            return self.fillchar*self.level
     def filter_func(info: tarfile.TarInfo, t: T):
         this_path = Path(info.name)
+        print(this_path)
         if info.isdir():
             if t.curr_dir:
                 # print(t.curr_dir, list(this_path.parents))
                 if t.curr_dir not in this_path.parents: # Not subdir
                     # print(t.curr_dir.parts, this_path.parent.name) 
                     t.level = t.curr_dir.parts.index(this_path.parent.name)
+                    t.levelcount = 0
             t.curr_dir = this_path 
-            print("--"* t.level + "📁 " + t.curr_dir.parts[t.level])
+            print(t.fill() + "📁 " + t.curr_dir.parts[t.level])
             t.level += 1
+            t.levelcount = 0
         elif t.curr_dir:
             # print(t.curr_dir)
             if t.curr_dir not in this_path.parents:
                 t.level = 0
+                t.levelcount = 0
                 t.curr_dir = None 
                 print("+ " + this_path.as_posix())
             else:
-                print("--" * t.level, this_path.name)
+                print(t.fill(), this_path.name)
         else:
             print("+ " + info.name)
             
