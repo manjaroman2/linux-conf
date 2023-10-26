@@ -120,6 +120,8 @@ backup_compressed = backup.parent / f"backup-{datetime_serialize(d)}.tar{c}"
 
 print(f"Compressing {compression} file: {backup_compressed.name}")
 make_tarfile(backup_compressed, backup, compression)
+if args.debug:
+    exit(0)
 
 hashed = hash_bytes(backup_compressed.read_bytes())
 
@@ -137,8 +139,7 @@ bcs = backup_compressed.stat().st_size
 print(
     f"Backup size: {convert_size(bs)}\t>>>\t{convert_size(bcs)} compressed ({round(bcs/bs*100, 1)}%)")
 shutil.rmtree(backup)
-if args.debug:
-    exit(0)
+
 if args.ask: 
     if (ask := str(input("Send it?  [Y|n]") or "Y").lower()) == "y":
         subprocess.run(rclone_send(backup_compressed))
