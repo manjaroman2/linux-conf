@@ -38,11 +38,7 @@ for f in files:
     if not f.exists():
         print(f"{f} does not exist. Skipping")
         continue
-    # if f not in home.parents: 
-    #     abs_files.append(f)
     p = backup / f.relative_to("/")
-    # else:
-    #     p = backup / f.relative_to(home)
     if not p.parent.exists():
         p.parent.mkdir(parents=True)
     if f.is_dir():
@@ -67,36 +63,21 @@ def make_tarfile(output_filename, source_dir: Path, compression="xz"):
         def __init__(self) -> None:
             self.fillchar = "--"
             self.level = 0
-            self.curr_dir: Path = None
+            self.last: Path = None
             self.levelcount = 0
             self.max_level_count = 5
         def fill(self):
             return self.fillchar*self.level
     def filter_func(info: tarfile.TarInfo, t: T):
-        # this_path = Path(info.name)
-        # print(t.curr_dir, this_path.as_posix().upper())
-        # if info.isdir():
-        #     if t.curr_dir:
-        #         if t.curr_dir not in this_path.parents: # Not subdir
-        #             t.level = t.curr_dir.parts.index(this_path.parent.name)
-        #             t.levelcount = 0
-        #     t.curr_dir = this_path 
-        #     print(t.fill() + "📁 " + t.curr_dir.parts[t.level])
-        #     t.level += 1
-        #     t.levelcount = 0
-        # elif t.curr_dir:
-        #     # print(t.curr_dir)
-        #     if t.curr_dir not in this_path.parents:
-        #         t.level = 0
-        #         t.levelcount = 0
-        #         t.curr_dir = None 
-        #         print("+ " + this_path.as_posix())
-        #     else:
-        #         print(t.fill(), this_path.name)
-        # else:
-        #     print("+ " + info.name)
-            
-        info.mtime = 0 # So the hashes will match
+        this_path = Path(info.name)
+        """
+        yeah, am hyp-no-tised by the liight
+        I'm coming home I'm coming down toniight
+        """ 
+        # TODO display directories nicely (I'm too stupid for this)
+
+        # Remove all the metadata, so the hashes will match
+        info.mtime = 0 
         info.uid = 0
         info.uname = ''
         info.gid = 0
