@@ -84,7 +84,7 @@ def make_tarfile(output_filename, source_dir: Path, compression="xz"):
                 t.curr_dir = None 
                 print("+ " + this_path.as_posix())
             else:
-                print("+ ", this_path.name)
+                print("--" * t.level, this_path.name)
         else:
             print("+ " + info.name)
             
