@@ -23,6 +23,7 @@ Run `$ pushconf --ask` and save the backup if you want to be very safe.
 
 #### TODO for Developers
 
+* print out directories nicely 
+* Local storage if no internet
+
 * Implement loading local backups 
-* Config for dummies? No.
-* Crontab? No? 
