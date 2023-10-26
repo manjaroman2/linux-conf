@@ -74,7 +74,7 @@ def make_tarfile(output_filename, source_dir: Path, compression="xz"):
             return self.fillchar*self.level
     def filter_func(info: tarfile.TarInfo, t: T):
         this_path = Path(info.name)
-        print(t.curr_dir.as_posix().upper(), this_path.as_posix().upper())
+        print(t.curr_dir, this_path.as_posix().upper())
         if info.isdir():
             if t.curr_dir:
                 # print(t.curr_dir, list(this_path.parents))
