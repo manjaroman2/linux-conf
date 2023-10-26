@@ -70,9 +70,9 @@ def make_tarfile(output_filename, source_dir: Path, compression="xz"):
         if info.isdir():
             this_path = Path(info.name)
             if t.curr_dir:
-                print(t.curr_dir, list(this_path.parents))
+                # print(t.curr_dir, list(this_path.parents))
                 if t.curr_dir not in this_path.parents: # Not subdir
-                    print(t.curr_dir.parts, this_path.parent.name) 
+                    # print(t.curr_dir.parts, this_path.parent.name) 
                     t.level = t.curr_dir.parts.index(this_path.parent.name)
             t.curr_dir = this_path 
             print("--"* t.level + "📁 " + t.curr_dir.parts[t.level])
