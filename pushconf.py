@@ -65,9 +65,7 @@ def make_tarfile(output_filename, source_dir: Path, compression="xz"):
     is_in_dir = False
     curr_dir = None 
     level = 0
-    def filter_func(info: tarfile.TarInfo):
-        global curr_dir
-        global level
+    def filter_func(info: tarfile.TarInfo, curr_dir, level):
         if info.isdir():
             curr_dir = Path(info.name) 
             print(" "* level + "📁 " + info.name)
@@ -89,7 +87,7 @@ def make_tarfile(output_filename, source_dir: Path, compression="xz"):
         info.pax_headers = {}
         return info 
     with tarfile.open(output_filename, f"w:{compression}") as tar:
-        tar.add(source_dir, arcname=source_dir.stem, filter=filter_func)
+        tar.add(source_dir, arcname=source_dir.stem, filter=lambda info: filter_func(info, curr_dir, level))
 
 
 def dirsize(path):
