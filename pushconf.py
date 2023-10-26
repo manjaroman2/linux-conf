@@ -67,8 +67,8 @@ def make_tarfile(output_filename, source_dir: Path, compression="xz"):
             self.level = 0
             self.curr_dir: Path = None
     def filter_func(info: tarfile.TarInfo, t: T):
+        this_path = Path(info.name)
         if info.isdir():
-            this_path = Path(info.name)
             if t.curr_dir:
                 # print(t.curr_dir, list(this_path.parents))
                 if t.curr_dir not in this_path.parents: # Not subdir
@@ -78,11 +78,13 @@ def make_tarfile(output_filename, source_dir: Path, compression="xz"):
             print("--"* t.level + "📁 " + t.curr_dir.parts[t.level])
             t.level += 1
         elif t.curr_dir:
-            print(t.curr_dir)
-            if t.curr_dir not in Path(info.name).parents:
+            # print(t.curr_dir)
+            if t.curr_dir not in this_path.parents:
                 t.level = 0
                 t.curr_dir = None 
-            print("+ " + info.name)
+                print("+ " + this_path)
+            else:
+                print("+ ", this_path.name)
         else:
             print("+ " + info.name)
             
