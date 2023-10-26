@@ -49,7 +49,7 @@ for f in files:
         shutil.copytree(f, p)
     else:
         shutil.copyfile(f, p)
-    print(f"  {f} -> {p}")
+    # print(f"  {f} -> {p}")
 
 
 def convert_size(size_bytes):
@@ -69,11 +69,12 @@ def make_tarfile(output_filename, source_dir: Path, compression="xz"):
             self.level = 0
             self.curr_dir: Path = None
             self.levelcount = 0
+            self.max_level_count = 5
         def fill(self):
             return self.fillchar*self.level
     def filter_func(info: tarfile.TarInfo, t: T):
         this_path = Path(info.name)
-        print(this_path.as_posix().upper())
+        print(t.curr_dir.as_posix().upper(), this_path.as_posix().upper())
         if info.isdir():
             if t.curr_dir:
                 # print(t.curr_dir, list(this_path.parents))
