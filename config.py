@@ -55,6 +55,7 @@ more_files = [
     config_path / "alacritty/alacritty.yml", # Alacritty settings
 
     config_path / "libreoffice/4/user/template/", # Libreoffice templates 
+    home / ".ipython" / "profile_default" / "ipython_config.py",
 
     home / "docs/bitwardenpw",      # Super secret password file
     home / "todo",                  # Todo list 
