@@ -82,7 +82,7 @@ def make_tarfile(output_filename, source_dir: Path, compression="xz"):
             if t.curr_dir not in Path(info.name).parents:
                 t.level = 0
                 t.curr_dir = None 
-                print("+ " + info.name)
+            print("+ " + info.name)
         else:
             print("+ " + info.name)
             
