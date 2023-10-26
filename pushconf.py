@@ -6,7 +6,7 @@ import tarfile
 import datetime
 import subprocess
 from config import files, compression
-from common import init_state, rclone_send, datetime_serialize, write_state, hash_bytes
+from common import init_state, rclone_send, datetime_serialize, write_state, hash_bytes, state_print
 from common import backup_path as backup
 import argparse 
 
@@ -88,8 +88,9 @@ print(f"Compressing {compression} file: {backup_compressed.name}")
 make_tarfile(backup_compressed, backup, compression)
 
 hashed = hash_bytes(backup_compressed.read_bytes())
-print(state[1] + " <-- old state")
-print(hashed + " <-- new state")
+
+print(state_print(state), "<-- old")
+print(state_print([0, hashed]), "<-- new")
 if hashed == state[1]:
     print("  No changes since last backup. Exiting.")
     # if (ask := str(input("  New backup is identical to current state. \nDo you want to proceed? [y|N]") or "N").lower()) != "y":

@@ -72,3 +72,6 @@ def hash_bytes(data: bytes) -> str:
     o = hashlib.sha512()
     o.update(data)
     return o.hexdigest()
+
+def state_print(state) -> str:
+    return f"{state[1][:16]}..."
