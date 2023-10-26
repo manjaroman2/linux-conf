@@ -1,4 +1,5 @@
 testdir 
 __pycache__
 .state
+*.tar.*
 backup/
