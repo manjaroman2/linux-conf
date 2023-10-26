@@ -62,7 +62,6 @@ def convert_size(size_bytes):
 
 
 def make_tarfile(output_filename, source_dir: Path, compression="xz"):
-    is_in_dir = False
     class T:
         def __init__(self) -> None:
             self.level = 0
@@ -78,7 +77,6 @@ def make_tarfile(output_filename, source_dir: Path, compression="xz"):
                 t.curr_dir = None 
                 print("+ " + info.name)
         else:
-
             print("+ " + info.name)
             
         info.mtime = 0 # So the hashes will match
@@ -88,8 +86,9 @@ def make_tarfile(output_filename, source_dir: Path, compression="xz"):
         info.gname = ''
         info.pax_headers = {}
         return info 
+    t = T()
     with tarfile.open(output_filename, f"w:{compression}") as tar:
-        tar.add(source_dir, arcname=source_dir.stem, filter=lambda info: filter_func(info, T()))
+        tar.add(source_dir, arcname=source_dir.stem, filter=lambda info: filter_func(info, t))
 
 
 def dirsize(path):
