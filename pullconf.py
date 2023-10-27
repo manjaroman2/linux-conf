@@ -103,8 +103,8 @@ if backup_path.exists():
             subprocess.call(["/usr/bin/sudo", "python", "-c", python_code])
 with tarfile.open(backuptar) as tar:
     tar.extractall(basepath)
-Path(backuptar).unlink()
 if args.just_dl:
+    Path(backuptar).unlink()
     exit(0)
 if args.force:
     input()
