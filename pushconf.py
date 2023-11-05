@@ -52,15 +52,6 @@ if not backup.is_dir():
     backup.mkdir()
 else:
     if f := list(backup.glob("./*")):
-        # if (
-        #     ow := str(
-        #         input(
-        #             f"{len(f)} files exist in {backup}. \nDo you want to delete everything in the directory? [Y|n] "
-        #             or "Y"
-        #         )
-        #     ).lower()
-        # ) == "y":
-        #     exit(1)
         shutil.rmtree(backup)
         backup.mkdir()
 
@@ -146,10 +137,10 @@ if args.debug:
 
 hashed = hash_bytes(backup_compressed.read_bytes())
 
-print("old state:", state_print(state))
-print("new state:", state_print([0, hashed]))
+print("old state:       ", state_print(state))
+print("compressed state:", state_print([0, hashed]))
 if hashed == state[1]:
-    print("  No changes since last backup. Exiting.")
+    print("  No local changes since last backup. Exiting.")
     # if (ask := str(input("  New backup is identical to current state. \nDo you want to proceed? [y|N]") or "N").lower()) != "y":
     shutil.rmtree(backup)
     backup_compressed.unlink()
