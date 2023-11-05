@@ -15,6 +15,9 @@ Run `$ pushconf --ask` and save the backup if you want to be very safe.
 2. `git clone git@github.com:manjaroman2/linux-conf.git && cd linux-conf && chmod +x setup.sh && ./setup.sh`
 3. `pushconf --ask`
 4. `pullconf`
+OR 
+4. `pullconf --newest`
+if you don't want any questions. You could put this command in .xinitrc or a comparable file (strongly discouraged)
 
 #### How configure rclone???? 
 1. Open some bash or zsh or whatever and install rclone from your package manager
