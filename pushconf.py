@@ -145,8 +145,8 @@ if args.debug:
 
 hashed = hash_bytes(backup_compressed.read_bytes())
 
-print(state_print(state), "<-- old")
-print(state_print([0, hashed]), "<-- new")
+print("old state:", state_print(state))
+print("new state:", state_print([0, hashed]))
 if hashed == state[1]:
     print("  No changes since last backup. Exiting.")
     # if (ask := str(input("  New backup is identical to current state. \nDo you want to proceed? [y|N]") or "N").lower()) != "y":

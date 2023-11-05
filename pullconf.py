@@ -16,7 +16,7 @@ from common import (
     has_bin_path,
     has_internet,
     hash_algorithm,
-    get_state_hash
+    state_print
 )
 from argparse import ArgumentParser
 
@@ -36,7 +36,8 @@ else:
 
 state = init_state()
 
-print(f"  local state: \n    {state[0]} | {get_state_hash(state)} ({hash_algorithm.__name__})")
+print(f"local state: {state_print(state, date=True)}")
+# print(f"  local state: \n    {state[0]} | {get_state_hash(state)} ({hash_algorithm.__name__})")
 
 remotebackups = []
 print(f"checking {rclonedir}")
