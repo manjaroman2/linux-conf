@@ -148,16 +148,16 @@ if hashed == state[1]:
 bs = dirsize(backup)
 bcs = backup_compressed.stat().st_size
 print(
-    f"Backup size: {convert_size(bs)}>>>{convert_size(bcs)} compressed ({round(bcs/bs*100, 1)}%)"
+    f"Backup size: {convert_size(bs)} >>> {convert_size(bcs)} compressed ({round(bcs/bs*100, 1)}%)"
 )
 shutil.rmtree(backup)
 
 if args.ask:
     if (ask := str(input("Send it?  [Y|n]") or "Y").lower()) == "y":
-        run_command(rclone_cmd_send(backup_compressed))
+        run_command(rclone_cmd_send(backup_compressed, lambda l: None))
         print(f"{backup_compressed} pushed!")
 else:
-    run_command(rclone_cmd_send(backup_compressed))
+    run_command(rclone_cmd_send(backup_compressed, lambda l: None))
     print(f"{backup_compressed} pushed!")
 backup_compressed.unlink()
 if (d - state[0]).total_seconds() > 0:
