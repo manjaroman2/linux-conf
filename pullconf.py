@@ -103,7 +103,7 @@ idx = (
 )
 f = valid_remote_backups[idx][1]
 
-run_command(rclone_cmd_copy(f), parse_rclone_transfer)
+run_command(rclone_cmd_copy(f), parse_rclone_transfer, end="\n")
 
 backuptar = basepath / f
 backup_path = basepath / "backup"

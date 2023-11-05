@@ -24,7 +24,7 @@ def has_internet(host="8.8.8.8", port=53, timeout=3) -> bool:
         return False
 
 
-def run_command(cmd, callback = None, end="\n"):
+def run_command(cmd, callback = None, end=""):
     print(f'$ {cmd}')
     if not callback:
         callback = lambda line: print(repr(line))
