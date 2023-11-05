@@ -13,7 +13,8 @@ from common import (
     write_state,
     hash_bytes,
     state_print,
-    has_internet
+    has_internet,
+    run_command
 )
 from common import backup_path as backup
 import argparse
@@ -23,13 +24,6 @@ parser.add_argument("-a", "--ask", action="store_true")
 parser.add_argument("--debug", action="store_true")
 args = parser.parse_args()
 
-def run_command(cmd, callback = None):
-    print(cmd)
-    if not callback:
-        callback = lambda line: print(repr(line))
-    p = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, stdin=subprocess.PIPE)
-    for line in p.stdout:
-        callback(line.decode())         
 
 print("checking internet connection")
 if has_internet():

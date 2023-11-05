@@ -1,5 +1,6 @@
 from pathlib import Path 
 import datetime
+import subprocess
 import hashlib
 
 import config 
@@ -21,6 +22,14 @@ def has_internet(host="8.8.8.8", port=53, timeout=3) -> bool:
         print(' ', ex)
         return False
 
+
+def run_command(cmd, callback = None):
+    print(f'$ {cmd}')
+    if not callback:
+        callback = lambda line: print(repr(line))
+    p = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, stdin=subprocess.PIPE)
+    for line in p.stdout:
+        callback(line.decode())         
 
 
 pullconf_sh_build = lambda p: f"""#!/usr/bin/bash
@@ -50,8 +59,8 @@ if has_bin_path:
 backup_path = basepath / "backup"
 statefile = basepath / ".state"
 
-rclone_lsf = ["rclone", "lsf", rclonedir]
-rclone_copy = lambda remote_path = "": ["rclone", "copy", "-P", "-vvv", "-M", (Path(rclonedir) / remote_path).as_posix(), basepath.as_posix()]
+rclone_cmd_lsf = lambda: f"rclone lsf {rclonedir}"
+rclone_cmd_copy = lambda remote_path = "": ["rclone", "copy", "-P", "-vvv", "-M", (Path(rclonedir) / remote_path).as_posix(), basepath.as_posix()]
 rclone_send = lambda backup_compressed: ["rclone", "copy", "-L", "-P", "-M", backup_compressed, rclonedir]
 datetime_serialize = lambda d: d.isoformat(timespec='seconds')
 

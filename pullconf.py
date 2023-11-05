@@ -1,4 +1,3 @@
-import subprocess
 from pathlib import Path
 from datetime import datetime
 import tarfile
@@ -7,16 +6,16 @@ import sys
 from os import get_terminal_size
 from common import (
     rclonedir,
-    rclone_lsf,
-    rclone_copy,
+    rclone_cmd_lsf,
+    rclone_cmd_copy,
     basepath,
     init_state,
     write_state,
     hash_bytes,
     has_bin_path,
     has_internet,
-    hash_algorithm,
-    state_print
+    state_print,
+    run_command
 )
 from argparse import ArgumentParser
 
@@ -28,8 +27,7 @@ args = parser.parse_args()
 print("checking internet connection")
 if has_internet():
     print("  ✓ has internet")
-    print("git pull")
-    print('  ' + subprocess.check_output(["git", "pull"]).decode().strip())
+    run_command("git pull", lambda line: print(' ', line.strip()))
 else:
     print("  ❌ no internet, exiting")
     exit(1)
@@ -40,18 +38,16 @@ print(f"  local state: {state_print(state, date=True)}")
 # print(f"  local state: \n    {state[0]} | {get_state_hash(state)} ({hash_algorithm.__name__})")
 
 remotebackups = []
-print(f"checking {rclonedir}")
-for f in (
-    subprocess.run(rclone_lsf, capture_output=True, text=True)
-    .stdout.strip("\n")
-    .split("\n")
-):
-    x = Path(Path(f).stem)
+def parse_lsf(line):
+    line = line.strip("\n")
+    x = Path(Path(line).stem)
     while x.suffixes:
         x = Path(x.stem)
     if x.name.startswith("backup-"):
         d = datetime.fromisoformat(x.name[7:])
-        remotebackups.append((d, f))
+        remotebackups.append((d, line))
+
+run_command(rclone_cmd_lsf(), parse_lsf)
 
 print(f"  Found {len(remotebackups)} backups")
 print(f"    -- Date -- -- Time --")
