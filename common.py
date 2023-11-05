@@ -99,7 +99,7 @@ def hash_bytes(data: bytes) -> str:
     return o.hexdigest()
 
 def state_print(state, date=False) -> str:
-    r = f"{get_state_hash(state):19} {hash_algorithm.__name__}"
+    r = f"{get_state_hash(state):19} ({hash_algorithm.__name__})"
     if date:
         r = f"{state[0]} | {r}"
     return r
