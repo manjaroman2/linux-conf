@@ -12,7 +12,8 @@ Run `$ pushconf --ask` and save the backup if you want to be very safe.
 
 (0. Know a little bit of python :] ) 
 1. Setup rclone 
-2. `git clone git@github.com:manjaroman2/linux-conf.git && cd linux-conf && chmod +x setup.sh && ./setup.sh`
+2. Fork the repo (required atm)
+3. `git clone git@github.com:<YOUR NAME>/linux-conf.git && cd linux-conf && chmod +x setup.sh && ./setup.sh`
 3. `pushconf --ask`
 4. `pullconf`
 OR 
