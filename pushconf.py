@@ -34,12 +34,9 @@ def run_command(cmd, callback = None):
 print("checking internet connection")
 if has_internet():
     print("  ✓ has internet")
-    print("git pull")
-    print(' ', subprocess.check_output(["git", "pull"]).decode().strip())
+    run_command("git pull", lambda line: print(' ', line.strip()))
     run_command("git commit -am pushconf", lambda line: print(' ', line.strip()))
     run_command("git push", lambda line: print(' ', line.strip()))
-    # print(repr(subprocess.check_output(["git", "push"]).decode().strip().split("\n")))
-    # print(' ', '\n  '.join())
 else:
     print("  ❌ no internet, exiting")
     exit(1)
