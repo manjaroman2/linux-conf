@@ -38,7 +38,7 @@ if has_internet():
     print(' ', subprocess.check_output(["git", "pull"]).decode().strip())
     print("git commit")
     print(' ', subprocess.check_output(["git", "commit", "-am", "pushconf"]).decode().strip())
-    run_command("git push")
+    run_command("git push", lambda line: print(' ', line.strip()))
     # print(repr(subprocess.check_output(["git", "push"]).decode().strip().split("\n")))
     # print(' ', '\n  '.join())
 else:
