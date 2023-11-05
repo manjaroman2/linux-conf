@@ -3,7 +3,7 @@ from datetime import datetime
 import tarfile
 import shutil
 import sys
-from os import get_terminal_size
+from os.path import commonprefix
 from common import (
     rclone_cmd_lsf,
     rclone_cmd_copy,
@@ -120,12 +120,20 @@ if backup_path.exists():
             """
             run_command(f"/usr/bin/sudo python -c {python_code}")
             # subprocess.call(["/usr/bin/sudo", "python", "-c", python_code])
+
 with tarfile.open(backuptar) as tar:
+    exdir = basepath / commonprefix(tar.getnames())
+    arrs = ' '.join(['\/'] * (len(exdir.as_posix())//3))
+    # padd = len(exdir.as_posix()) // 2 - len(arrs) // 2
+    padd = 0
+    print(f"extracting \n  {backuptar} \n   {arrs}{' '*padd}\n  {exdir}")
     tar.extractall(basepath)
+
 if args.just_dl:
-    Path(backuptar).unlink()
+    # Path(backuptar).unlink()
     print("just-dl flag was passed, exiting")
     exit(0)
+
 if args.force:
     input()
 root_path = Path.home().parts[0]

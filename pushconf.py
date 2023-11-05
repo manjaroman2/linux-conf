@@ -153,7 +153,7 @@ print(
 shutil.rmtree(backup)
 
 def send():
-    run_command(rclone_cmd_send(backup_compressed), parse_rclone_transfer, end="\n")
+    run_command(rclone_cmd_send(backup_compressed.as_posix()), parse_rclone_transfer, end="\n")
     print(f"{backup_compressed} pushed!")
 
 if args.ask:
