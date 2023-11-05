@@ -4,6 +4,7 @@ from datetime import datetime
 import tarfile
 import shutil
 import sys 
+from os import get_terminal_size
 from common import (
     rclonedir,
     rclone_lsf,
@@ -13,6 +14,9 @@ from common import (
     write_state,
     hash_bytes,
     has_bin_path,
+    has_internet,
+    hash_algorithm,
+    get_state_hash
 )
 from argparse import ArgumentParser
 
@@ -21,10 +25,21 @@ parser.add_argument("--force", action="store_true")
 parser.add_argument("--just-dl", action="store_true", help="Just download, don't overwrite")
 args = parser.parse_args()
 
+print("checking internet connection")
+if has_internet():
+    print("  ✓ has internet")
+    print("git pull")
+    print('  ' + subprocess.check_output(["git", "pull"]).decode().strip())
+else:
+    print("  ❌ no internet, exiting")
+    exit(1)
+
 state = init_state()
 
+print(f"  local state: \n    {state[0]} | {get_state_hash(state)} ({hash_algorithm.__name__})")
+
 remotebackups = []
-print(f"Checking {rclonedir}")
+print(f"checking {rclonedir}")
 for f in (
     subprocess.run(rclone_lsf, capture_output=True, text=True)
     .stdout.strip("\n")
@@ -36,22 +51,24 @@ for f in (
     if x.name.startswith("backup-"):
         d = datetime.fromisoformat(x.name[7:])
         remotebackups.append((d, f))
-        # print(f"backup #{i}:", d)
 
 print(f"  Found {len(remotebackups)} backups")
-print('  ' + state[1][:16] + "...  <-- local state")
-if not args.force:
+print(f"    -- Date -- -- Time --")
+for d, f in remotebackups[-5:]:
+    print(f"    {d}")
+
+if args.force:
+    valid_remote_backups = remotebackups
+else:
     valid_remote_backups = [
         (d, f) for d, f in remotebackups if (d - state[0]).total_seconds() > 0
     ]
-else:
-    valid_remote_backups = remotebackups
-if not args.just_dl:
-    if len(valid_remote_backups) == 0:
-        print("  Is already on newest state. Exiting")
-        exit(1)
-    print(f" Found {len(valid_remote_backups)} newer backups on remote. ")
+
 valid_remote_backups = sorted(valid_remote_backups, key=lambda x: x[0])
+print(f"  Found {len(valid_remote_backups)} newer backups")
+if len(valid_remote_backups) == 0:
+    print("  Is already on newest state. Exiting")
+    exit(1)
 i = len(valid_remote_backups) - 1
 for d, f in valid_remote_backups:
     dt = datetime.now() - d
@@ -72,20 +89,34 @@ for d, f in valid_remote_backups:
             days = "--------"
     else:
         j += "]  "
-    print(f"{j}{days:9} {hours:9}ago  ({''.join(Path(f).suffixes)})")
+    print(f"  {j}{days:9} {hours:9}ago  ({''.join(Path(f).suffixes)})")
 
     i -= 1
 idx = (
-    len(valid_remote_backups)
-    - 1
-    - int(
-        input(f" Which backup to load [0-{len(valid_remote_backups)-1}]  [0]") or "0"
+    len(valid_remote_backups) - 1 - int(
+        input(f"  Which backup to load [0-{len(valid_remote_backups)-1}]  [0]") or "0"
     )
 )
 f = valid_remote_backups[idx][1]
 
-print(f"-> fetching {f}!")
-subprocess.run(rclone_copy(f))
+print(f"  fetching {f} from {rclonedir}")
+cmd = " ".join(rclone_copy(f))
+# print(cmd)
+p = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE)
+i = 1
+for line in p.stdout:
+    line = line.decode()
+    if line.startswith("Transferred"):
+        msg = '\r    '
+        msg += line.strip().replace("\t", "")
+        msg += '.'*i
+        padding = get_terminal_size().columns - len(msg)
+        padding *= ' '
+        msg += padding
+        # print(repr(msg))
+        print(msg, end='', flush=True)
+        i += 1
+print()
 backuptar = basepath / f
 
 backup_path = basepath / "backup"
@@ -105,6 +136,7 @@ with tarfile.open(backuptar) as tar:
     tar.extractall(basepath)
 if args.just_dl:
     Path(backuptar).unlink()
+    print("just-dl flag was passed, exiting")
     exit(0)
 if args.force:
     input()
