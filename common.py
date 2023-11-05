@@ -24,14 +24,14 @@ def has_internet(host="8.8.8.8", port=53, timeout=3) -> bool:
         return False
 
 
-def run_command(cmd, callback = None):
+def run_command(cmd, callback = None, end="\n"):
     print(f'$ {cmd}')
     if not callback:
         callback = lambda line: print(repr(line))
     p = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, stdin=subprocess.PIPE)
     for line in p.stdout:
         callback(line.decode())   
-    print()
+    print(end, end="", flush=True)
 
 
 pullconf_sh_build = lambda p: f"""#!/usr/bin/bash
