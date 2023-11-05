@@ -4,7 +4,6 @@ from pathlib import Path
 import shutil
 import tarfile
 import datetime
-import subprocess
 from config import files, compression
 from common import (
     state_init,
@@ -13,7 +12,8 @@ from common import (
     state_write,
     state_print,
     has_internet,
-    run_command
+    run_command,
+    datetime_serialize
 )
 from common import backup_path as backup
 import argparse
