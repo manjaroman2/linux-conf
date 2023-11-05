@@ -31,7 +31,7 @@ if has_internet():
     print("git commit")
     print(' ', subprocess.check_output(["git", "commit", "-am", "pushconf"]).decode().strip())
     print("git push")
-    print(subprocess.check_output(["git", "push"]).decode().strip().split("\n"))
+    print(repr(subprocess.check_output(["git", "push"]).decode().strip().split("\n")))
     # print(' ', '\n  '.join())
 else:
     print("  ❌ no internet, exiting")
