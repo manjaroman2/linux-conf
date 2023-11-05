@@ -15,6 +15,7 @@ from common import (
     has_internet,
     state_print,
     run_command,
+    parse_rclone_transfer
 )
 from argparse import ArgumentParser
 
@@ -102,19 +103,7 @@ idx = (
 )
 f = valid_remote_backups[idx][1]
 
-
-def parse_rclone_cmd_copy(line):
-    i = 1
-    if line.startswith("Transferred"):
-        msg = ["\r    ", line.strip().replace("\t", ""), "." * i]
-        padding = " " * (get_terminal_size().columns - len("".join(msg)))
-        msg.append(padding)
-        print("".join(msg), end="", flush=True)
-        i += 1
-    print()
-
-
-run_command(rclone_cmd_copy(f), parse_rclone_cmd_copy)
+run_command(rclone_cmd_copy(f), parse_rclone_transfer)
 
 backuptar = basepath / f
 backup_path = basepath / "backup"

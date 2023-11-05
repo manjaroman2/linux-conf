@@ -2,6 +2,7 @@ from pathlib import Path
 import datetime
 import subprocess
 import hashlib
+from os import get_terminal_size
 
 import config 
 from config import rclonedir, files
@@ -65,6 +66,17 @@ def rclone_cmd_copy(basepath: Path, remote_path: str = ""):
     return f"rclone copy -P -vvv -M {(Path(rclonedir) / remote_path).as_posix()} {basepath.as_posix()}"
 def rclone_cmd_send(backup_compressed: Path):
     return f"rclone copy -L -P -M {backup_compressed.as_posix()} {rclonedir}"
+
+def parse_rclone_transfer(line):
+    i = 1
+    if line.startswith("Transferred"):
+        msg = ["\r    ", line.strip().replace("\t", ""), "." * i]
+        padding = " " * (get_terminal_size().columns - len("".join(msg)))
+        msg.append(padding)
+        print("".join(msg), end="", flush=True)
+        i += 1
+    print()
+
 
 def datetime_serialize(d: datetime.datetime):
     return d.isoformat(timespec='seconds')

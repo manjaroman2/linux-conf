@@ -13,7 +13,8 @@ from common import (
     state_print,
     has_internet,
     run_command,
-    datetime_serialize
+    datetime_serialize,
+    parse_rclone_transfer
 )
 from common import backup_path as backup
 import argparse
@@ -153,7 +154,7 @@ shutil.rmtree(backup)
 
 if args.ask:
     if (ask := str(input("  send it?  [Y|n]") or "Y").lower()) == "y":
-        run_command(rclone_cmd_send(backup_compressed), lambda l: None)
+        run_command(rclone_cmd_send(backup_compressed), parse_rclone_transfer)
         print(f"{backup_compressed} pushed!")
 else:
     run_command(rclone_cmd_send(backup_compressed), lambda l: None)
