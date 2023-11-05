@@ -31,7 +31,7 @@ if has_internet():
     print("git commit")
     print(' ', subprocess.check_output(["git", "commit", "-am", "pushconf"]).decode().strip())
     print("git push")
-    p = subprocess.Popen("git push", stdout=subprocess.PIPE)
+    p = subprocess.Popen("git push", shell=True, stdout=subprocess.PIPE)
     for line in p.stdout:
         print(repr(line.decode().strip())) 
     # print(repr(subprocess.check_output(["git", "push"]).decode().strip().split("\n")))
