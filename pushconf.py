@@ -8,7 +8,7 @@ import subprocess
 from config import files, compression
 from common import (
     init_state,
-    rclone_send,
+    rclone_cmd_send,
     datetime_serialize,
     write_state,
     hash_bytes,
@@ -127,7 +127,7 @@ def dirsize(path):
 
 c = f".{compression}" if compression else ""
 d = datetime.datetime.now()
-backup_compressed = backup.parent / f"backup-{datetime_serialize(d)}.tar{c}"
+backup_compressed: Path = backup.parent / f"backup-{datetime_serialize(d)}.tar{c}"
 
 
 print(f"compressing {compression} file: {backup_compressed.name}")
@@ -155,10 +155,10 @@ shutil.rmtree(backup)
 
 if args.ask:
     if (ask := str(input("Send it?  [Y|n]") or "Y").lower()) == "y":
-        subprocess.run(rclone_send(backup_compressed))
+        run_command(rclone_cmd_send(backup_compressed))
         print(f"{backup_compressed} pushed!")
 else:
-    subprocess.run(rclone_send(backup_compressed))
+    run_command(rclone_cmd_send(backup_compressed))
     print(f"{backup_compressed} pushed!")
 backup_compressed.unlink()
 if (d - state[0]).total_seconds() > 0:

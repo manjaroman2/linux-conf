@@ -38,7 +38,7 @@ print(f"  local state: {state_print(state, date=True)}")
 # print(f"  local state: \n    {state[0]} | {get_state_hash(state)} ({hash_algorithm.__name__})")
 
 remotebackups = []
-def parse_lsf(line):
+def parse_rclone_cmd_lsf(line):
     line = line.strip("\n")
     x = Path(Path(line).stem)
     while x.suffixes:
@@ -47,7 +47,7 @@ def parse_lsf(line):
         d = datetime.fromisoformat(x.name[7:])
         remotebackups.append((d, line))
 
-run_command(rclone_cmd_lsf(), parse_lsf)
+run_command(rclone_cmd_lsf(), parse_rclone_cmd_lsf)
 
 print(f"  Found {len(remotebackups)} backups")
 print(f"    -- Date -- -- Time --")
@@ -96,26 +96,18 @@ idx = (
 )
 f = valid_remote_backups[idx][1]
 
-print(f"  fetching {f} from {rclonedir}")
-cmd = " ".join(rclone_copy(f))
-# print(cmd)
-p = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE)
-i = 1
-for line in p.stdout:
-    line = line.decode()
+def parse_rclone_cmd_copy(line):
+    i = 1
     if line.startswith("Transferred"):
-        msg = '\r    '
-        msg += line.strip().replace("\t", "")
-        msg += '.'*i
-        padding = get_terminal_size().columns - len(msg)
-        padding *= ' '
-        msg += padding
-        # print(repr(msg))
-        print(msg, end='', flush=True)
+        msg = ['\r    ', line.strip().replace("\t", ""), '.'*i]
+        padding = ' ' * (get_terminal_size().columns - len(''.join(msg))) 
+        msg.append(padding)
+        print(''.join(msg), end='', flush=True)
         i += 1
-print()
-backuptar = basepath / f
+    print()
+run_command(rclone_cmd_copy(f), parse_rclone_cmd_copy)
 
+backuptar = basepath / f
 backup_path = basepath / "backup"
 if backup_path.exists():
     try:
@@ -128,7 +120,8 @@ if backup_path.exists():
     import shutil
     shutil.rmtree(backup_path)
             """
-            subprocess.call(["/usr/bin/sudo", "python", "-c", python_code])
+            run_command(f"/usr/bin/sudo python -c {python_code}")
+            # subprocess.call(["/usr/bin/sudo", "python", "-c", python_code])
 with tarfile.open(backuptar) as tar:
     tar.extractall(basepath)
 if args.just_dl:
@@ -156,9 +149,11 @@ import shutil
 shutil.copytree(obj, dst, dirs_exist_ok=True)
                 """
                 # print(python_code)
-                ret = subprocess.call(["/usr/bin/sudo", "python", "-c", python_code])
+                run_command(f"/usr/bin/sudo python -c {python_code}")
+                # ret = subprocess.call(["/usr/bin/sudo", "python", "-c", python_code])
             else:
                 print(e)
+                exit(1)
     elif obj.is_file():
         try:
             shutil.copyfile(obj, dst)
@@ -173,9 +168,10 @@ import shutil
 shutil.copyfile(obj, dst)
                 """
                 # print(python_code)
-                ret = subprocess.call(["/usr/bin/sudo", "python", "-c", python_code])
+                run_command(f"/usr/bin/sudo python -c {python_code}")
             else:
                 print(e)
+                exit(1)
     else:
         raise Exception(obj)
 if needs_sudo:
@@ -186,7 +182,7 @@ backup_path=Path("{backup_path}")
 import shutil
 shutil.rmtree(backup_path)
         """
-        subprocess.call(["/usr/bin/sudo", "python", "-c", python_code])
+        run_command(f"/usr/bin/sudo python -c {python_code}")
 else:        
     shutil.rmtree(backup_path)
 write_state(d, hash_bytes(backuptar.read_bytes()))

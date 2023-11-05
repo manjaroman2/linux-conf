@@ -59,9 +59,13 @@ if has_bin_path:
 backup_path = basepath / "backup"
 statefile = basepath / ".state"
 
-rclone_cmd_lsf = lambda: f"rclone lsf {rclonedir}"
-rclone_cmd_copy = lambda remote_path = "": ["rclone", "copy", "-P", "-vvv", "-M", (Path(rclonedir) / remote_path).as_posix(), basepath.as_posix()]
-rclone_send = lambda backup_compressed: ["rclone", "copy", "-L", "-P", "-M", backup_compressed, rclonedir]
+def rclone_cmd_lsf():
+    return f"rclone lsf {rclonedir}"
+def rclone_cmd_copy(basepath: Path, remote_path: str = ""):
+    return f"rclone copy -P -vvv -M {(Path(rclonedir) / remote_path).as_posix()} {basepath.as_posix()}"
+def rclone_cmd_send(backup_compressed: Path):
+    return f"rclone copy -L -P -M {backup_compressed.as_posix()} {rclonedir.as_posix()}"
+
 datetime_serialize = lambda d: d.isoformat(timespec='seconds')
 
 def init_state() -> datetime.datetime:
