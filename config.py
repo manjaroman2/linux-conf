@@ -83,7 +83,7 @@ more_files = [
     config_path / "libreoffice/4/user/template/", # Libreoffice templates 
     home / ".ipython", # IPython configs 
 
-    home / "docs/bitwardenpw",      # Super secret password file
+    home / "docs_old/bitwardenpw",      # Super secret password file
     home / "todo",                  # Todo list 
 ]
 # ------------------------------------------------------------------ # 

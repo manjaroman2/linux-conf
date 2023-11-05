@@ -23,7 +23,6 @@ def has_internet(host="8.8.8.8", port=53, timeout=3) -> bool:
         print(' ', ex)
         return False
 
-
 def run_command(cmd, callback = None, end=""):
     print(f'$ {cmd}')
     if not callback:
@@ -68,6 +67,7 @@ def rclone_cmd_copy(remote_path: str):
 def rclone_cmd_send(backup_compressed: str):
     return f"rclone copy -L -P -M {backup_compressed} {rclonedir}"
 
+
 def parse_rclone_transfer(line):
     i = 1
     if line.startswith("Transferred"):
@@ -78,10 +78,7 @@ def parse_rclone_transfer(line):
         i += 1
 
 
-def datetime_serialize(d: datetime.datetime):
-    return d.isoformat(timespec='seconds')
-
-def state_init() -> datetime.datetime:
+def state_init():
     print("initializing state")
     if has_bin_path:
         import stat 
@@ -100,7 +97,7 @@ def state_init() -> datetime.datetime:
         hashed = sp[1]
     return dt, hashed
 
-def get_state_hash(state):
+def state_get_hash(state):
     if not state[1]:
         return "<NO HASH>" 
     return f"{state[1][:16]}..."
@@ -109,13 +106,16 @@ def state_write(state) -> None:
     s = datetime_serialize(state[0])
     statefile.write_text(f"{s} {state[1]}")
 
+def state_print(state, date=False) -> str:
+    r = f"{state_get_hash(state):19} ({hash_algorithm.__name__})"
+    if date:
+        r = f"{state[0]} | {r}"
+    return r
+
 def hash_bytes(data: bytes) -> str:
     o = hash_algorithm() 
     o.update(data)
     return o.hexdigest()
 
-def state_print(state, date=False) -> str:
-    r = f"{get_state_hash(state):19} ({hash_algorithm.__name__})"
-    if date:
-        r = f"{state[0]} | {r}"
-    return r
+def datetime_serialize(d: datetime.datetime):
+    return d.isoformat(timespec='seconds')
