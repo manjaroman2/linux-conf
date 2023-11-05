@@ -43,6 +43,8 @@ else:
 
 state = init_state()
 
+print("  local state:", state_print(state, True))
+
 abs_files = []
 
 if not backup.is_dir():
