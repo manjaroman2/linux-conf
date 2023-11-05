@@ -2,42 +2,45 @@ from pathlib import Path
 from datetime import datetime
 import tarfile
 import shutil
-import sys 
+import sys
 from os import get_terminal_size
 from common import (
-    rclonedir,
     rclone_cmd_lsf,
     rclone_cmd_copy,
     basepath,
-    init_state,
-    write_state,
+    state_init,
+    state_write,
     hash_bytes,
     has_bin_path,
     has_internet,
     state_print,
-    run_command
+    run_command,
 )
 from argparse import ArgumentParser
 
 parser = ArgumentParser()
 parser.add_argument("--force", action="store_true")
-parser.add_argument("--just-dl", action="store_true", help="Just download, don't overwrite")
+parser.add_argument(
+    "--just-dl", action="store_true", help="Just download, don't overwrite"
+)
 args = parser.parse_args()
 
 print("checking internet connection")
 if has_internet():
     print("  ✓ has internet")
-    run_command("git pull", lambda line: print(' ', line.strip()))
+    run_command("git pull", lambda line: print(" ", line.strip()))
 else:
     print("  ❌ no internet, exiting")
     exit(1)
 
-state = init_state()
+state = state_init()
 
 print(f"  local state: {state_print(state, date=True)}")
 # print(f"  local state: \n    {state[0]} | {get_state_hash(state)} ({hash_algorithm.__name__})")
 
 remotebackups = []
+
+
 def parse_rclone_cmd_lsf(line):
     line = line.strip("\n")
     x = Path(Path(line).stem)
@@ -46,6 +49,7 @@ def parse_rclone_cmd_lsf(line):
     if x.name.startswith("backup-"):
         d = datetime.fromisoformat(x.name[7:])
         remotebackups.append((d, line))
+
 
 run_command(rclone_cmd_lsf(), parse_rclone_cmd_lsf)
 
@@ -90,21 +94,26 @@ for d, f in valid_remote_backups:
 
     i -= 1
 idx = (
-    len(valid_remote_backups) - 1 - int(
+    len(valid_remote_backups)
+    - 1
+    - int(
         input(f"  Which backup to load [0-{len(valid_remote_backups)-1}]  [0]") or "0"
     )
 )
 f = valid_remote_backups[idx][1]
 
+
 def parse_rclone_cmd_copy(line):
     i = 1
     if line.startswith("Transferred"):
-        msg = ['\r    ', line.strip().replace("\t", ""), '.'*i]
-        padding = ' ' * (get_terminal_size().columns - len(''.join(msg))) 
+        msg = ["\r    ", line.strip().replace("\t", ""), "." * i]
+        padding = " " * (get_terminal_size().columns - len("".join(msg)))
         msg.append(padding)
-        print(''.join(msg), end='', flush=True)
+        print("".join(msg), end="", flush=True)
         i += 1
     print()
+
+
 run_command(rclone_cmd_copy(f), parse_rclone_cmd_copy)
 
 backuptar = basepath / f
@@ -131,7 +140,7 @@ if args.just_dl:
 if args.force:
     input()
 root_path = Path.home().parts[0]
-needs_sudo = False  
+needs_sudo = False
 for obj in Path(backup_path).glob("*"):
     dst = root_path / obj.relative_to(backup_path)
     print(dst)
@@ -183,9 +192,10 @@ import shutil
 shutil.rmtree(backup_path)
         """
         run_command(f"/usr/bin/sudo python -c {python_code}")
-else:        
+else:
     shutil.rmtree(backup_path)
-write_state(d, hash_bytes(backuptar.read_bytes()))
+
+state_write((d, hash_bytes(backuptar.read_bytes())))
 print("config has been updated")
 
 # Make all files in bin_path executable because some remotes don't keep file permissions (too bad)

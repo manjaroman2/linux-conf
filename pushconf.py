@@ -7,11 +7,10 @@ import datetime
 import subprocess
 from config import files, compression
 from common import (
-    init_state,
+    state_init,
     rclone_cmd_send,
-    datetime_serialize,
-    write_state,
     hash_bytes,
+    state_write,
     state_print,
     has_internet,
     run_command
@@ -35,7 +34,7 @@ else:
     print("  ❌ no internet, exiting")
     exit(1)
 
-state = init_state()
+state = state_init()
 
 print("  local state:", state_print(state, True))
 
@@ -148,12 +147,12 @@ if hashed == state[1]:
 bs = dirsize(backup)
 bcs = backup_compressed.stat().st_size
 print(
-    f"Backup size: {convert_size(bs)} >>> {convert_size(bcs)} compressed ({round(bcs/bs*100, 1)}%)"
+    f"  backup size: {convert_size(bs)} >>> {convert_size(bcs)} compressed ({round(bcs/bs*100, 1)}%)"
 )
 shutil.rmtree(backup)
 
 if args.ask:
-    if (ask := str(input("Send it?  [Y|n]") or "Y").lower()) == "y":
+    if (ask := str(input("  send it?  [Y|n]") or "Y").lower()) == "y":
         run_command(rclone_cmd_send(backup_compressed), lambda l: None)
         print(f"{backup_compressed} pushed!")
 else:
@@ -161,4 +160,6 @@ else:
     print(f"{backup_compressed} pushed!")
 backup_compressed.unlink()
 if (d - state[0]).total_seconds() > 0:
-    print(f"local state -> {write_state(d, hashed)}")
+    state = (d, hashed)
+    state_write(state)
+    print("local state:", state_print(state, date=True))

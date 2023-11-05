@@ -66,9 +66,10 @@ def rclone_cmd_copy(basepath: Path, remote_path: str = ""):
 def rclone_cmd_send(backup_compressed: Path):
     return f"rclone copy -L -P -M {backup_compressed.as_posix()} {rclonedir}"
 
-datetime_serialize = lambda d: d.isoformat(timespec='seconds')
+def datetime_serialize(d: datetime.datetime):
+    return d.isoformat(timespec='seconds')
 
-def init_state() -> datetime.datetime:
+def state_init() -> datetime.datetime:
     print("initializing state")
     if has_bin_path:
         import stat 
@@ -92,10 +93,9 @@ def get_state_hash(state):
         return "<NO HASH>" 
     return f"{state[1][:16]}..."
 
-def write_state(d: datetime.datetime, hashed: str) -> str:
-    s = datetime_serialize(d)
-    statefile.write_text(f"{s} {hashed}")
-    return s 
+def state_write(state) -> None:
+    s = datetime_serialize(state[0])
+    statefile.write_text(f"{s} {state[1]}")
 
 def hash_bytes(data: bytes) -> str:
     o = hash_algorithm() 
