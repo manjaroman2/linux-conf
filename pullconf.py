@@ -36,7 +36,7 @@ else:
 
 state = init_state()
 
-print(f"local state: {state_print(state, date=True)}")
+print(f"  local state: {state_print(state, date=True)}")
 # print(f"  local state: \n    {state[0]} | {get_state_hash(state)} ({hash_algorithm.__name__})")
 
 remotebackups = []

@@ -77,7 +77,7 @@ def init_state() -> datetime.datetime:
 def get_state_hash(state):
     if not state[1]:
         return "<NO HASH>" 
-    return state[1][:16]
+    return f"{state[1][:16]}..."
 
 def write_state(d: datetime.datetime, hashed: str) -> str:
     s = datetime_serialize(d)
@@ -90,7 +90,7 @@ def hash_bytes(data: bytes) -> str:
     return o.hexdigest()
 
 def state_print(state, date=False) -> str:
-    r = f"{get_state_hash(state)}... {hash_algorithm.__name__}"
+    r = f"{get_state_hash(state):19} {hash_algorithm.__name__}"
     if date:
         r = f"{state[0]} | {r}"
     return r
