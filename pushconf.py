@@ -23,6 +23,14 @@ parser.add_argument("-a", "--ask", action="store_true")
 parser.add_argument("--debug", action="store_true")
 args = parser.parse_args()
 
+def run_command(cmd, callback = None):
+    print(cmd)
+    if not callback:
+        callback = lambda line: print(repr(line))
+    p = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, stdin=subprocess.PIPE)
+    for line in p.stdout:
+        callback(line.decode())         
+
 print("checking internet connection")
 if has_internet():
     print("  ✓ has internet")
@@ -30,10 +38,7 @@ if has_internet():
     print(' ', subprocess.check_output(["git", "pull"]).decode().strip())
     print("git commit")
     print(' ', subprocess.check_output(["git", "commit", "-am", "pushconf"]).decode().strip())
-    print("git push")
-    p = subprocess.Popen("git push", shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE)
-    for line in p.stdout:
-        print(repr(line.decode().strip())) 
+    run_command("git push")
     # print(repr(subprocess.check_output(["git", "push"]).decode().strip().split("\n")))
     # print(' ', '\n  '.join())
 else:
