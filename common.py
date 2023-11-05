@@ -69,14 +69,12 @@ def rclone_cmd_send(backup_compressed: Path):
 
 def parse_rclone_transfer(line):
     i = 1
-    print(repr(line))
     if line.startswith("Transferred"):
         msg = ["\r    ", line.strip().replace("\t", ""), "." * i]
         padding = " " * (get_terminal_size().columns - len("".join(msg)))
         msg.append(padding)
         print("".join(msg), end="", flush=True)
         i += 1
-    print()
 
 
 def datetime_serialize(d: datetime.datetime):
