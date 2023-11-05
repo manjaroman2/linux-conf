@@ -154,10 +154,10 @@ shutil.rmtree(backup)
 
 if args.ask:
     if (ask := str(input("Send it?  [Y|n]") or "Y").lower()) == "y":
-        run_command(rclone_cmd_send(backup_compressed, lambda l: None))
+        run_command(rclone_cmd_send(backup_compressed), lambda l: None)
         print(f"{backup_compressed} pushed!")
 else:
-    run_command(rclone_cmd_send(backup_compressed, lambda l: None))
+    run_command(rclone_cmd_send(backup_compressed), lambda l: None)
     print(f"{backup_compressed} pushed!")
 backup_compressed.unlink()
 if (d - state[0]).total_seconds() > 0:
