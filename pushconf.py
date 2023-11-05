@@ -141,15 +141,14 @@ print("  local state:     ", state_print(state))
 print("  compressed state:", state_print([0, hashed]))
 if hashed == state[1]:
     print("  No local changes since last backup. Exiting.")
-    # if (ask := str(input("  New backup is identical to current state. \nDo you want to proceed? [y|N]") or "N").lower()) != "y":
     shutil.rmtree(backup)
     backup_compressed.unlink()
-    quit(1)
+    exit(0)
 
 bs = dirsize(backup)
 bcs = backup_compressed.stat().st_size
 print(
-    f"Backup size: {convert_size(bs)}\t>>>\t{convert_size(bcs)} compressed ({round(bcs/bs*100, 1)}%)"
+    f"Backup size: {convert_size(bs)}>>>{convert_size(bcs)} compressed ({round(bcs/bs*100, 1)}%)"
 )
 shutil.rmtree(backup)
 
