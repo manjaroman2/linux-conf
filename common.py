@@ -30,7 +30,8 @@ def run_command(cmd, callback = None):
         callback = lambda line: print(repr(line))
     p = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, stdin=subprocess.PIPE)
     for line in p.stdout:
-        callback(line.decode())         
+        callback(line.decode())   
+    print()
 
 
 pullconf_sh_build = lambda p: f"""#!/usr/bin/bash
