@@ -52,15 +52,15 @@ if not backup.is_dir():
     backup.mkdir()
 else:
     if f := list(backup.glob("./*")):
-        if (
-            ow := str(
-                input(
-                    f"{len(f)} files exist in {backup}. \nDo you want to delete everything in the directory? [Y|n] "
-                    or "Y"
-                )
-            ).lower()
-        ) == "y":
-            exit(1)
+        # if (
+        #     ow := str(
+        #         input(
+        #             f"{len(f)} files exist in {backup}. \nDo you want to delete everything in the directory? [Y|n] "
+        #             or "Y"
+        #         )
+        #     ).lower()
+        # ) == "y":
+        #     exit(1)
         shutil.rmtree(backup)
         backup.mkdir()
 
